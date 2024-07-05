@@ -39,7 +39,7 @@ export const createContactController = async (req, res) => {
 
 export const patchContactController = async (req, res, next) => {
     const { contactId } = req.params;
-    const updatedResult = await patchContact({ _id: contactId }, req.body);
+    const updatedResult = await patchContact(contactId, req.body);
 
     if (!updatedResult) {
         next(createHttpError(404, {
@@ -53,7 +53,7 @@ export const patchContactController = async (req, res, next) => {
     res.json({
         status: 200,
         message: 'Successfully patched a contact!',
-        data: updatedResult.data,
+        data: updatedResult,
     });
 
 };
