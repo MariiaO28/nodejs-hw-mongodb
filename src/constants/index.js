@@ -9,3 +9,5 @@ export const keysOfContacts = [
         'createdAt',
         'updatedAt',
 ];
+
+export const typeList = ['work', 'home', 'personal'];
