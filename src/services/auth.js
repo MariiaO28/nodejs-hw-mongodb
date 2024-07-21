@@ -5,6 +5,18 @@ import Session from '../db/models/Session.js';
 import { hashValue, compareValue } from '../utils/hash.js';
 import { FIFTEEN_MINUTES, ONE_MONTH } from '../constants/index.js';
 
+const createSession = () => {
+  const accessToken = randomBytes(30).toString('base64');
+  const refreshToken = randomBytes(30).toString('base64');
+
+  return {
+    accessToken,
+    refreshToken,
+    accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
+    refreshTokenValidUntil: new Date(Date.now() + ONE_MONTH),
+  };
+};
+
 export const createUser = async data => {
     const user = await User.findOne({ email: data.email });
     if (user) throw createHttpError(409, 'Email in use');
@@ -30,14 +42,32 @@ export const loginUser = async data => {
 
     await Session.deleteOne({ userId: user._id });
 
-    const accessToken = randomBytes(30).toString('base64');
-    const refreshToken = randomBytes(30).toString('base64');
-
+    const newSession = createSession();
     return await Session.create({
         userId: user._id,
-        accessToken,
-        refreshToken,
-        accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
-        refreshTokenValidUntil: new Date(Date.now()+ ONE_MONTH),
+        ...newSession
     });
+};
+
+export const refreshUserSession = async ({ sessionId, refreshToken }) => {
+    const session = await Session.findOne({ _id: sessionId, refreshToken });
+    if (!session) {
+        throw createHttpError(401, 'Session is not found');
+    }
+
+    const isSessionTokenExpired = new Date() > new Date(session.refreshTokenValidUntil);
+    if (isSessionTokenExpired) {
+        throw createHttpError(401, 'Session token expired!');
+    }
+
+    const newSession = createSession();
+    await Session.deleteOne({ _id: sessionId, refreshToken });
+    return await Session.create({
+        userId: session.userId,
+        ...newSession,
+    });
+};
+
+export const logoutUser = async sessionId => {
+    await Session.deleteOne({ _id: sessionId});
 };

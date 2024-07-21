@@ -4,8 +4,11 @@ import { createContactSchema, updateContactSchema } from '../validation/contacts
 import ctrlWrapper from '../utils/ctrlWrapper.js';
 import validateBody from '../middlewares/validateBody.js';
 import isValidId from '../middlewares/isValidId.js';
+import authenticate from '../middlewares/authenticate.js';
 
 const contactsRouter = Router();
+
+contactsRouter.use(authenticate);
 
 contactsRouter.get('/', ctrlWrapper(getAllContactsController));
 
