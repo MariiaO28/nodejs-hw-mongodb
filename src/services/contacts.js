@@ -7,6 +7,10 @@ export const getAllContacts = async ({ page = 1, perPage = 10, sortBy = '_id', s
     const skip = (page - 1) * perPage;
 
     const dataQuery = Contact.find();
+
+    if (filter.userId) {
+        dataQuery.where('userId').equals(filter.userId);
+    }
     if(filter.contactType) {
         dataQuery.where('contactType').equals(filter.contactType);
     }
@@ -26,13 +30,13 @@ export const getAllContacts = async ({ page = 1, perPage = 10, sortBy = '_id', s
     };
 };
 
-export const getContactById = contactId => Contact.findById(contactId);
+export const getContactById = filter => Contact.findOne(filter);
 
 export const createContact = data => Contact.create(data);
 
-export const patchContact = async (contactId, data, options = {}) => {
+export const patchContact = async (contactId, userId, data, options = {}) => {
    const result = await Contact.findOneAndUpdate(
-        { _id: contactId },
+        { _id: contactId, userId},
         data,
         {
             new: true,
@@ -40,7 +44,7 @@ export const patchContact = async (contactId, data, options = {}) => {
             ...options,
         },
    );
-    if (!result || !result.value) return null;
+   if (!result || !result.value) return null;
 
     return {
         contact: result.value,
