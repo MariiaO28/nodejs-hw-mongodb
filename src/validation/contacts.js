@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { emailRegexp } from '../constants/index.js';
 
 export const createContactSchema = Joi.object({
     name: Joi.string().lowercase().min(3).max(20).required().pattern(/^[a-zA-Z ]+$/).messages({
@@ -13,9 +14,7 @@ export const createContactSchema = Joi.object({
         'any.required': 'Phone number is a required field',
         'string.pattern.base': 'Phone number can only contain numbers',
     }),
-    email: Joi.string().lowercase().email().min(3).max(20).messages({
-        'string.min': 'Email should have at least 3 characters',
-        'string.max': 'Email should have at most 20 characters',
+    email: Joi.string().lowercase().pattern(emailRegexp).messages({
         'string.email': 'Email must be a valid email address',
     }),
     isFavourite: Joi.boolean(),
@@ -33,9 +32,7 @@ export const updateContactSchema = Joi.object({
         'string.max': 'Phone number should have at most 20 characters',
         'string.pattern.base': 'Phone number can only contain numbers',
     }),
-    email: Joi.string().email().min(3).max(20).messages({
-        'string.min': 'Email should have at least 3 characters',
-        'string.max': 'Email should have at most 20 characters',
+    email: Joi.string().pattern(emailRegexp).messages({
         'string.email': 'Email must be a valid email address',
     }),
     isFavourite: Joi.boolean(),

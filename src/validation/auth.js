@@ -1,4 +1,6 @@
 import Joi from 'joi';
+import { emailRegexp } from '../constants/index.js';
+
 // import { joiPasswordExtendCore } from 'joi-password';
 
 // const joiPassword = Joi.extend(joiPasswordExtendCore);
@@ -6,7 +8,7 @@ import Joi from 'joi';
 export const createUserSchema = Joi.object({
 
     name: Joi.string().min(3).max(30).required(),
-    email: Joi.string().email().required(),
+    email: Joi.string().pattern(emailRegexp).required(),
     password: Joi.string().required(),
         // name: Joi.string().lowercase().min(3).max(20).required().pattern(/^[a-zA-Z ]+$/).messages({
     //     'string.min': 'Name should have at least 3 characters',
@@ -31,12 +33,12 @@ export const createUserSchema = Joi.object({
 });
 
 export const loginUserSchema = Joi.object({
-    email: Joi.string().email().required(),
+    email: Joi.string().pattern(emailRegexp).required(),
     password: Joi.string().required(),
 });
 
 export const requestResetEmailSchema = Joi.object({
-    email: Joi.string().email().required(),
+    email: Joi.string().pattern(emailRegexp).required(),
 });
 
 export const resetPasswordSchema = Joi.object({

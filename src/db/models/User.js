@@ -1,5 +1,4 @@
 import { model, Schema } from 'mongoose';
-import email from 'mongoose-type-email';
 
 const userSchema = new Schema(
     {
@@ -8,7 +7,7 @@ const userSchema = new Schema(
             required: true,
         },
         email: {
-            type: email,
+            type: String,
             unique: true,
             required: true,
         },

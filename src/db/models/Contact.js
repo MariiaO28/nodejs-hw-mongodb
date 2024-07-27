@@ -1,5 +1,4 @@
 import { model, Schema } from 'mongoose';
-import email from 'mongoose-type-email';
 
 const contactSchema = new Schema(
     {
@@ -12,7 +11,7 @@ const contactSchema = new Schema(
             required: true,
         },
         email: {
-            type: email,
+            type: String,
             required: false,
         },
         isFavourite: {
@@ -21,7 +20,7 @@ const contactSchema = new Schema(
         },
         contactType: {
             type: String,
-            required: false,
+            required: true,
             default: 'personal',
             enum: ['work', 'home', 'personal'],
         },
