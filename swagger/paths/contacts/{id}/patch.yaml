@@ -1,24 +1,25 @@
 tags:
   - Contacts
-summary: Create a contact
-operationId: createContact
-description: 'Create a contact with data'
+summary: Update contact information
+operationId: patchContact
+description: 'Update contact information'
 security:
   - bearerAuth: []
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+      example: 65ca67e7ae7f10c88b598384
 requestBody:
+  description: 'Update information about your contact by Id'
+  required: true
   content:
     multipart/form-data:
       schema:
         type: object
-        required:
-          - name
-          - phoneNumber
-          - contactType
         properties:
-          _id:
-            description: 'Contact id'
-            type: string
-            example: 65e4decdd286b30065d54af9
           name:
             description: 'Contact name'
             type: string
@@ -44,8 +45,8 @@ requestBody:
             type: string
             example: <https://res.cloudinary.com/uqwgdu/image/upload/image.png>
 responses:
-  '201':
-    description: 'Creates a contact'
+  '200':
+    description: Contact updated successfully
     content:
       application/json:
         schema:
@@ -57,13 +58,14 @@ responses:
           properties:
             status:
               type: integer
-              example: 201
+              example: 200
             message:
               type: string
-              example: 'Successfully created a contact!'
+              example: 'Successfully patched a contact!'
             data:
               type: object
-              $ref: '../../components/schemas/contact.yaml'
-
+              $ref: '../../../components/schemas/contact.yaml'
+  '404':
+    $ref: '../../../components/responses/404.yaml'
   '401':
-    $ref: '../../components/responses/401.yaml'
+    $ref: '../../../components/responses/401.yaml'
